@@ -1,0 +1,631 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>StarShine</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>⭐</text></svg>">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="StarShine">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;background:#0f0f0f;color:#e0e0e0;min-height:100vh;min-height:100dvh;padding-bottom:env(safe-area-inset-bottom)}
+.screen{display:none;min-height:100vh;min-height:100dvh}
+.screen.active{display:flex;flex-direction:column}
+
+/* ---- Welcome ---- */
+.welcome{align-items:center;justify-content:center;padding:32px;text-align:center;gap:24px}
+.welcome h1{font-size:2rem;color:#fff}
+.welcome .star-icon{font-size:3.5rem;margin-bottom:8px}
+.welcome p{color:#888;font-size:0.95rem;max-width:320px;line-height:1.5}
+.welcome-btns{display:flex;flex-direction:column;gap:12px;width:100%;max-width:280px}
+.welcome-btns button{padding:16px;border:none;border-radius:12px;font-size:1rem;cursor:pointer;font-weight:600}
+.btn-primary{background:#2563eb;color:#fff}
+.btn-secondary{background:#1a1a1a;color:#ccc;border:1px solid #333!important}
+
+/* ---- Import Screen ---- */
+.import-screen{padding:24px;max-width:500px;margin:0 auto;width:100%;gap:16px}
+.import-screen h2{color:#fff;font-size:1.3rem}
+.import-screen p{color:#888;font-size:0.85rem;line-height:1.5}
+.import-screen pre{background:#1a1a1a;padding:12px;border-radius:8px;font-size:0.72rem;color:#888;overflow-x:auto;line-height:1.6}
+.import-textarea{width:100%;min-height:200px;padding:12px;font-size:0.85rem;background:#1a1a1a;color:#ccc;border:1px solid #333;border-radius:10px;font-family:monospace;resize:vertical;line-height:1.5}
+.import-or{text-align:center;color:#555;font-size:0.8rem;padding:4px 0}
+.import-file-label{display:block;padding:14px;border:1px dashed #444;border-radius:10px;text-align:center;color:#888;font-size:0.85rem;cursor:pointer}
+.import-file-label:hover{border-color:#666;color:#aaa}
+.import-file-label input{display:none}
+.back-link{color:#60a5fa;font-size:0.85rem;cursor:pointer;border:none;background:none;padding:8px 0}
+
+/* ---- Home (Story List) ---- */
+.home{padding-bottom:80px}
+.home-header{padding:16px 16px 0;display:flex;justify-content:space-between;align-items:center}
+.home-header h1{font-size:1.3rem;color:#fff}
+.home-count{color:#888;font-size:0.8rem}
+.story-list{padding:12px 16px;display:flex;flex-direction:column;gap:8px}
+.story-item{background:#1a1a1a;border:1px solid #2a2a2a;border-radius:10px;padding:14px;cursor:pointer;-webkit-tap-highlight-color:transparent}
+.story-item:active{background:#222}
+.story-item-company{font-size:0.68rem;color:#60a5fa;font-weight:600;margin-bottom:4px;text-transform:uppercase;letter-spacing:0.03em}
+.story-item-title{font-size:0.92rem;color:#fff;font-weight:600;margin-bottom:4px}
+.story-item-preview{font-size:0.78rem;color:#777;line-height:1.4}
+.empty-state{text-align:center;padding:60px 24px;color:#555}
+.empty-state p{margin-bottom:16px;font-size:0.9rem;line-height:1.5}
+
+/* ---- Practice View ---- */
+.practice{padding:16px;padding-bottom:80px;max-width:500px;margin:0 auto;width:100%}
+.practice-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:16px}
+.practice-back{color:#60a5fa;font-size:0.85rem;cursor:pointer;border:none;background:none;padding:4px 0}
+.practice-counter{color:#888;font-size:0.8rem}
+.practice-mode-toggle{display:flex;gap:6px;margin-bottom:16px}
+.practice-mode-toggle button{flex:1;padding:8px;border:1px solid #333;border-radius:8px;background:#1a1a1a;color:#aaa;font-size:0.8rem;cursor:pointer}
+.practice-mode-toggle button.active{background:#2563eb;color:#fff;border-color:#2563eb}
+.practice-card{background:#1a1a1a;border:1px solid #2a2a2a;border-radius:12px;padding:20px;margin-bottom:16px;min-height:200px}
+.practice-company{font-size:0.68rem;color:#60a5fa;font-weight:600;text-transform:uppercase;letter-spacing:0.03em;margin-bottom:6px}
+.practice-title{font-size:1.05rem;font-weight:700;color:#fff;margin-bottom:14px;line-height:1.3}
+.star-section{margin-bottom:14px}
+.star-label{font-weight:700;font-size:0.78rem;text-transform:uppercase;letter-spacing:0.05em;margin-bottom:4px}
+.star-label.s{color:#f59e0b}.star-label.t{color:#3b82f6}.star-label.a{color:#10b981}.star-label.r{color:#8b5cf6}
+.star-text{font-size:0.88rem;line-height:1.55;color:#ccc}
+.reveal-btn{background:#252525;border:1px dashed #444;border-radius:8px;padding:14px;text-align:center;color:#666;cursor:pointer;margin-bottom:14px;font-size:0.85rem;-webkit-tap-highlight-color:transparent}
+.reveal-btn:active{border-color:#666;color:#999}
+.practice-nav{display:flex;gap:10px;margin-bottom:12px}
+.practice-nav button{flex:1;padding:14px;border:1px solid #333;border-radius:10px;background:#1a1a1a;color:#fff;font-size:0.95rem;cursor:pointer}
+.practice-nav button:disabled{opacity:0.25}
+.practice-nav button:active:not(:disabled){background:#252525}
+.progress-bar{margin-bottom:14px}
+.progress-row{display:flex;justify-content:space-between;font-size:0.72rem;color:#666;margin-bottom:4px}
+.progress-track{height:3px;background:#252525;border-radius:2px;overflow:hidden}
+.progress-fill{height:100%;background:#2563eb;border-radius:2px;transition:width 0.3s}
+.done-msg{text-align:center;color:#4ade80;font-size:0.8rem;margin-top:8px}
+.quiz-hint{background:#1e293b;border:1px solid #1e3a5f;border-radius:8px;padding:12px;margin-bottom:14px;color:#7db4f0;font-size:0.82rem;line-height:1.4}
+
+/* ---- Bottom Nav (mobile) ---- */
+.bottom-nav{position:fixed;bottom:0;left:0;right:0;background:#141414;border-top:1px solid #222;display:flex;padding:10px 0;padding-bottom:calc(10px + env(safe-area-inset-bottom));z-index:100}
+.bottom-nav button{flex:1;display:flex;flex-direction:column;align-items:center;gap:4px;border:none;background:none;color:#555;font-size:0.68rem;cursor:pointer;padding:4px 0;-webkit-tap-highlight-color:transparent;transition:color 0.15s}
+.bottom-nav button.active{color:#60a5fa}
+.bottom-nav .nav-icon{font-size:1.3rem;line-height:1}
+
+/* Top nav (desktop only) */
+.top-nav{display:none}
+
+@media(min-width:640px){
+  body{display:flex;flex-direction:column;align-items:center}
+  .screen{max-width:480px;width:100%;margin:0 auto}
+  .bottom-nav{display:none!important}
+  .top-nav{display:flex;max-width:480px;width:100%;margin:16px auto 0;gap:4px;padding:8px;background:#141414;border:1px solid #222;border-radius:12px}
+  .top-nav button{flex:1;padding:10px;border:none;border-radius:8px;background:transparent;color:#666;font-size:0.85rem;cursor:pointer;transition:color 0.15s,background 0.15s}
+  .top-nav button.active{color:#60a5fa;background:#1a1a2a}
+  .top-nav button:hover{color:#aaa}
+  .home,.practice,.manage{padding-bottom:16px}
+  .welcome{max-width:480px}
+  .import-screen{max-width:480px}
+}
+
+/* Mobile: hide top nav */
+@media(max-width:639px){
+  .top-nav{display:none!important}
+}
+
+/* ---- Manage ---- */
+.manage{padding:16px;padding-bottom:80px;max-width:500px;margin:0 auto;width:100%}
+.manage h2{color:#fff;font-size:1.2rem;margin-bottom:16px}
+.manage-section{margin-bottom:28px}
+.manage-section h3{color:#fff;font-size:0.95rem;margin-bottom:10px}
+.manage-section p{color:#888;font-size:0.78rem;line-height:1.5;margin-bottom:8px}
+.manage-story-row{background:#1a1a1a;border:1px solid #2a2a2a;border-radius:8px;padding:10px 12px;margin-bottom:6px;display:flex;justify-content:space-between;align-items:center;gap:8px}
+.manage-story-row .info{flex:1}
+.manage-story-row .info .title{font-size:0.82rem;color:#fff}
+.manage-story-row .info .company{font-size:0.68rem;color:#888}
+.manage-story-row .actions{display:flex;gap:4px}
+.manage-story-row button{padding:5px 10px;border:1px solid #333;border-radius:5px;background:#252525;color:#aaa;font-size:0.7rem;cursor:pointer}
+.manage-btn{padding:10px 20px;border:none;border-radius:8px;font-size:0.85rem;cursor:pointer;margin:4px 4px 4px 0}
+.form-group{margin-bottom:10px}
+.form-group label{display:block;font-size:0.75rem;color:#888;margin-bottom:3px;font-weight:600}
+.form-group input,.form-group textarea{width:100%;padding:10px;font-size:0.85rem;background:#1a1a1a;color:#ccc;border:1px solid #333;border-radius:8px;font-family:inherit}
+.form-group textarea{min-height:64px;resize:vertical}
+</style>
+</head>
+<body>
+<!--
+  STARSHINE - STAR Interview Practice App
+
+  SCREENS:
+  1. Welcome     - First-time onboarding (choose samples or import)
+  2. Import      - Paste markdown or upload file to add stories
+  3. Home        - Story list (main screen after onboarding)
+  4. Practice    - Flashcard/quiz view for one story at a time
+  5. Manage      - Add/edit/delete stories, import/export
+
+  DATA:
+  - Stories are stored in localStorage as JSON (key: 'ss_stories')
+  - Onboarding flag stored as 'ss_onboarded'
+  - Sample stories provided as fallback for first-time users
+
+  TO CUSTOMIZE:
+  - Edit the SAMPLES array in <script> to change default sample stories
+  - All styling is in <style> above — dark theme, mobile-first
+  - No external dependencies — single HTML file
+-->
+
+<!-- Screen: Welcome -->
+<div class="screen welcome" id="screenWelcome">
+  <div class="star-icon">⭐</div>
+  <h1>StarShine</h1>
+  <p>Practice your STAR interview stories on the go. Flashcards, quiz mode, and more.</p>
+  <div class="welcome-btns">
+    <button class="btn-primary" onclick="startWithSamples()">Try with sample stories</button>
+    <button class="btn-secondary" onclick="showScreen('screenImport')">Import my stories</button>
+  </div>
+</div>
+
+<!-- Screen: Import -->
+<div class="screen import-screen" id="screenImport">
+  <button class="back-link" onclick="showScreen('screenWelcome')">&larr; Back</button>
+  <h2>Import your stories</h2>
+  <p>Paste your STAR stories in markdown format:</p>
+  <pre>## Story Title | Company Name
+S: What was the situation?
+T: What was your task?
+A: What actions did you take?
+R: What was the result?
+
+## Next Story | Company
+S: ...
+T: ...
+A: ...
+R: ...</pre>
+  <textarea class="import-textarea" id="importTextarea" placeholder="Paste your markdown here..."></textarea>
+  <button class="btn-primary" style="width:100%;padding:14px;border-radius:10px;font-size:1rem;margin-top:8px" onclick="importAndStart()">Import stories</button>
+  <div class="import-or">or</div>
+  <label class="import-file-label">
+    Upload a .json or .md file
+    <input type="file" accept=".json,.md,.txt" onchange="importFile(event)">
+  </label>
+</div>
+
+<!-- Top Nav (desktop) -->
+<nav class="top-nav" id="topNav" style="display:none" role="navigation" aria-label="Main">
+  <button onclick="goHome()" id="topNavHome" aria-label="Stories">&#128218; Stories</button>
+  <button onclick="startPractice()" id="topNavPractice" aria-label="Practice">&#11088; Practice</button>
+  <button onclick="showScreen('screenManage');renderManage()" id="topNavManage" aria-label="Manage">&#9998; Manage</button>
+</nav>
+
+<!-- Screen: Home -->
+<div class="screen home" id="screenHome">
+  <div class="home-header">
+    <h1>My Stories</h1>
+    <span class="home-count" id="homeCount"></span>
+  </div>
+  <div class="story-list" id="storyList"></div>
+</div>
+
+<!-- Screen: Practice -->
+<div class="screen practice" id="screenPractice">
+  <div class="practice-header">
+    <button class="practice-back" onclick="goHome()">&larr; Stories</button>
+    <span class="practice-counter" id="practiceCounter"></span>
+  </div>
+  <div class="practice-mode-toggle">
+    <button id="toggleFlash" class="active" onclick="setPracticeMode('flash')">Flashcard</button>
+    <button id="toggleQuiz" onclick="setPracticeMode('quiz')">Quiz Me</button>
+  </div>
+  <div id="practiceCard"></div>
+  <div class="practice-nav">
+    <button id="btnPrev" onclick="prev()">&#8592;</button>
+    <button onclick="revealAll()">Reveal</button>
+    <button id="btnNext" onclick="next()">&#8594;</button>
+  </div>
+  <div class="progress-bar">
+    <div class="progress-row"><span id="progReviewed">0 reviewed</span><span id="progRemaining">0 remaining</span></div>
+    <div class="progress-track"><div class="progress-fill" id="progFill"></div></div>
+    <div class="done-msg" id="doneMsg" style="display:none">All done! Go back and shuffle to go again.</div>
+  </div>
+</div>
+
+<!-- Screen: Manage -->
+<div class="screen manage" id="screenManage">
+  <h2>Manage Stories</h2>
+  <div id="manageContent"></div>
+</div>
+
+<!-- Bottom Nav (hidden until onboarded) -->
+<nav class="bottom-nav" id="bottomNav" style="display:none" role="navigation" aria-label="Main">
+  <button onclick="goHome()" id="navHome" aria-label="Stories"><span class="nav-icon">&#128218;</span>Stories</button>
+  <button onclick="startPractice()" id="navPractice" aria-label="Practice"><span class="nav-icon">&#11088;</span>Practice</button>
+  <button onclick="showScreen('screenManage');renderManage()" id="navManage" aria-label="Manage"><span class="nav-icon">&#9998;</span>Manage</button>
+</nav>
+
+<script>
+// ============================================================
+// SAMPLE DATA — Replace these with your own default stories
+// These show when a user clicks "Try with sample stories"
+// ============================================================
+const SAMPLES=[
+  {title:"Product Launch for CloudSync",company:"Acme Corp",
+   s:"Acme Corp launching CloudSync into crowded market with two dominant competitors. No unified GTM narrative. Launch 8 weeks out, no positioning locked.",
+   t:"Own GTM strategy and positioning. Build launch narrative, align cross-functional teams, enter market with differentiated POV for IT directors at mid-market.",
+   a:"Conducted 25 customer interviews. Competitive audit mapping positioning gaps. Developed positioning: 'collaboration without complexity.' Built messaging house, battle cards, launch blog. Weekly readiness meetings for 6 weeks. Email campaign to 5K prospects + webinar series.",
+   r:"Exceeded Q1 pipeline by 35%. Webinar: 1,200 qualified leads. Win rate vs primary competitor: 28% to 41% in 90 days."},
+  {title:"Partner Co-Marketing with DataFlow",company:"Acme Corp",
+   s:"Strategic partnership with DataFlow produced zero joint pipeline after 6 months. Neither company invested in co-marketing. Partnership at risk of deprioritization.",
+   t:"Revive partnership with co-marketing that generated measurable joint pipeline and proved value to both leadership teams.",
+   a:"Aligned on shared ICP and value prop. Co-developed solution brief for cloud-native ETL migration. Joint webinar with customers from both sides. Co-branded landing page. Partner enablement kit for DataFlow sales. Monthly pipeline review cadence.",
+   r:"$2.4M joint pipeline in Q1. Webinar: 800 registrants, 45% attendance. CEO cited in earnings. Template replicated for 3 partner programs."},
+  {title:"Developer Adoption for API Platform",company:"TechStart",
+   s:"API platform for fintech devs stalled at 3K MAUs. Confusing docs, too much onboarding friction, no community. Competitors gaining with better DX.",
+   t:"Own developer marketing and adoption. Target 10K MAUs in 6 months.",
+   a:"Rebuilt docs by use case (JTBD). Quick-start guide: first API call in <5 min. Discord community + weekly office hours. YouTube tutorial series. Dev newsletter. Usage analytics dashboard. Hackathon with $25K prizes.",
+   r:"3K to 12.5K MAUs in 5 months. Hackathon: 400 participants, 3 partnerships. Time-to-first-call: 45min to 4min. NPS: +12 to +47."},
+  {title:"Competitive Repositioning",company:"TechStart",
+   s:"Competitor launched free tier capturing 40% of new signups in 3 months. Sales losing deals. Board pressuring. Matching free tier would cannibalize $8M ARR.",
+   t:"Competitive response protecting revenue without price war.",
+   a:"Analyzed 50 lost deals \u2014 70% perception-driven not price. 15 win/loss interviews. Reframed: 'production-grade vs prototype-grade.' Bi-weekly intel brief. Migration cost calculator showing hidden scaling costs. 12 case studies from regulated industries.",
+   r:"Win rate: 31% to 52% in one quarter. Retained 94% ARR. Positioning adopted company-wide. Calculator cited in 60% of closed-won."},
+  {title:"Global Brand Campaign",company:"GlobalCo",
+   s:"Expanded 3 to 12 markets in 2 years. Separate uncoordinated campaigns per region. Brand perception varied wildly. Spend efficiency declining QoQ.",
+   t:"First unified global brand campaign \u2014 flexible for regions, consistent for identity across 12 markets.",
+   a:"Audited 12 markets. Brand research in top 5. Universal insight: 'tools that grow with you.' Brand platform + visual system + modular toolkit. Governance playbook. Virtual summit with 12 regional leads. Piloted 3 markets then global. Shared asset library + dashboard.",
+   r:"12 markets in 4 months. Recognition up 28%. Spend efficiency +22%. Won B2B brand award."}
+];
+
+// ============================================================
+// DATA LAYER — localStorage read/write for story persistence
+// ============================================================
+function load(){try{const d=localStorage.getItem('ss_stories');return d?JSON.parse(d):null}catch(e){return null}}
+function save(d){try{localStorage.setItem('ss_stories',JSON.stringify(d))}catch(e){}}
+function isOnboarded(){return localStorage.getItem('ss_onboarded')==='1'}
+function setOnboarded(){localStorage.setItem('ss_onboarded','1')}
+
+let stories=load()||[];
+let currentIdx=0;
+let practiceMode='flash';
+let revealed=new Set();
+let reviewedSet=new Set();
+let shuffled=false;
+let practiceOrder=[];
+let editIdx=-1;
+
+// ============================================================
+// MARKDOWN PARSER — Converts markdown text to story objects
+// Expected format:
+//   ## Story Title | Company Name
+//   S: Situation text
+//   T: Task text
+//   A: Action text
+//   R: Result text
+// ============================================================
+function parseMd(md){
+  const out=[];
+  const blocks=md.split(/^## /m).filter(b=>b.trim());
+  for(const block of blocks){
+    const lines=block.trim().split('\n');
+    const hdr=lines[0].trim();
+    const rest=lines.slice(1).join('\n');
+    let title,company;
+    if(hdr.includes('|')){[title,company]=hdr.split('|').map(s=>s.trim())}
+    else{title=hdr;company='My Company'}
+    const sM=rest.match(/S:\s*([\s\S]*?)(?=\nT:|$)/i);
+    const tM=rest.match(/T:\s*([\s\S]*?)(?=\nA:|$)/i);
+    const aM=rest.match(/A:\s*([\s\S]*?)(?=\nR:|$)/i);
+    const rM=rest.match(/R:\s*([\s\S]*?)$/i);
+    if(title&&(sM||tM)){out.push({title,company,s:sM?sM[1].trim():'',t:tM?tM[1].trim():'',a:aM?aM[1].trim():'',r:rM?rM[1].trim():''})}
+  }
+  return out;
+}
+
+// ============================================================
+// SCREEN NAVIGATION — Show/hide screens, update bottom nav
+// ============================================================
+function showScreen(id){
+  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  const showNav=['screenHome','screenPractice','screenManage'].includes(id);
+  // Bottom nav (mobile)
+  document.getElementById('bottomNav').style.display=showNav?'flex':'none';
+  // Top nav (desktop)
+  const topNav=document.getElementById('topNav');
+  topNav.style.display=showNav?'':'none';
+  // Highlight active tab in both navs
+  document.querySelectorAll('.bottom-nav button, .top-nav button').forEach(b=>b.classList.remove('active'));
+  const map={screenHome:['navHome','topNavHome'],screenPractice:['navPractice','topNavPractice'],screenManage:['navManage','topNavManage']};
+  if(map[id])map[id].forEach(btnId=>document.getElementById(btnId).classList.add('active'));
+}
+
+// ============================================================
+// WELCOME / ONBOARDING — First-time user flow
+// ============================================================
+function startWithSamples(){
+  stories=[...SAMPLES];
+  save(stories);
+  setOnboarded();
+  goHome();
+}
+
+function importAndStart(){
+  const md=document.getElementById('importTextarea').value.trim();
+  if(!md){alert('Paste your stories first.');return}
+  const parsed=parseMd(md);
+  if(parsed.length===0){alert('No stories found. Check the format.');return}
+  stories=parsed;
+  save(stories);
+  setOnboarded();
+  goHome();
+}
+
+function importFile(e){
+  const file=e.target.files[0];
+  if(!file)return;
+  const reader=new FileReader();
+  reader.onload=function(ev){
+    const text=ev.target.result;
+    if(file.name.endsWith('.json')){
+      try{
+        const data=JSON.parse(text);
+        if(!Array.isArray(data)){alert('Invalid JSON format.');return}
+        stories=data;
+      }catch(err){alert('Error: '+err.message);return}
+    }else{
+      const parsed=parseMd(text);
+      if(parsed.length===0){alert('No stories found.');return}
+      stories=parsed;
+    }
+    save(stories);
+    setOnboarded();
+    goHome();
+  };
+  reader.readAsText(file);
+}
+
+// ============================================================
+// HOME — Story list (main screen after onboarding)
+// ============================================================
+function goHome(){
+  showScreen('screenHome');
+  renderHome();
+}
+
+function renderHome(){
+  document.getElementById('homeCount').textContent=stories.length+' stories';
+  const el=document.getElementById('storyList');
+  if(stories.length===0){
+    el.innerHTML=`<div class="empty-state"><p>No stories yet.</p><button class="btn-primary" style="padding:12px 24px;border:none;border-radius:10px;font-size:0.9rem;cursor:pointer" onclick="showScreen('screenManage');renderManage()">Add your first story</button></div>`;
+    return;
+  }
+  let html='';
+  stories.forEach((s,i)=>{
+    html+=`<div class="story-item" onclick="openStory(${i})">`;
+    html+=`<div class="story-item-company">${esc(s.company)}</div>`;
+    html+=`<div class="story-item-title">${esc(s.title)}</div>`;
+    html+=`<div class="story-item-preview">${esc(s.s.substring(0,90))}${s.s.length>90?'...':''}</div>`;
+    html+=`</div>`;
+  });
+  el.innerHTML=html;
+}
+
+// ============================================================
+// PRACTICE — Flashcard and Quiz modes for individual stories
+// ============================================================
+function openStory(i){
+  practiceOrder=stories.map((_,idx)=>idx);
+  currentIdx=practiceOrder.indexOf(i);
+  if(currentIdx<0)currentIdx=0;
+  revealed=new Set();
+  reviewedSet=new Set();
+  showScreen('screenPractice');
+  renderPractice();
+}
+
+function startPractice(){
+  if(stories.length===0){goHome();return}
+  // shuffle for fresh practice
+  practiceOrder=stories.map((_,i)=>i);
+  for(let i=practiceOrder.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[practiceOrder[i],practiceOrder[j]]=[practiceOrder[j],practiceOrder[i]]}
+  currentIdx=0;
+  revealed=new Set();
+  reviewedSet=new Set();
+  showScreen('screenPractice');
+  renderPractice();
+}
+
+function setPracticeMode(m){
+  practiceMode=m;
+  revealed=new Set();
+  document.getElementById('toggleFlash').classList.toggle('active',m==='flash');
+  document.getElementById('toggleQuiz').classList.toggle('active',m==='quiz');
+  renderPractice();
+}
+
+function renderPractice(){
+  if(stories.length===0)return;
+  const storyIdx=practiceOrder[currentIdx];
+  const story=stories[storyIdx];
+  const total=practiceOrder.length;
+  document.getElementById('practiceCounter').textContent=`${currentIdx+1} / ${total}`;
+
+  // Progress
+  const reviewed=reviewedSet.size;
+  const remaining=total-reviewed;
+  const pct=total>0?Math.round(reviewed/total*100):0;
+  document.getElementById('progReviewed').textContent=reviewed+' reviewed';
+  document.getElementById('progRemaining').textContent=remaining+' remaining';
+  document.getElementById('progFill').style.width=pct+'%';
+  document.getElementById('doneMsg').style.display=(reviewed===total&&total>0)?'block':'none';
+
+  let html='';
+  html+=`<div class="practice-card">`;
+  html+=`<div class="practice-company">${esc(story.company)}</div>`;
+  html+=`<div class="practice-title">${esc(story.title)}</div>`;
+
+  if(practiceMode==='quiz'){
+    html+=`<div class="quiz-hint">Read the Situation. Try to recall the rest before revealing.</div>`;
+    html+=`<div class="star-section"><div class="star-label s">Situation</div><div class="star-text">${esc(story.s)}</div></div>`;
+    ['t','a','r'].forEach(k=>{
+      const labels={t:'Task',a:'Action',r:'Result'};
+      html+=revealed.has(k)
+        ?`<div class="star-section"><div class="star-label ${k}">${labels[k]}</div><div class="star-text">${esc(story[k])}</div></div>`
+        :`<div class="reveal-btn" onclick="reveal('${k}')">Tap to check ${labels[k]}</div>`;
+    });
+  }else{
+    ['s','t','a','r'].forEach(k=>{
+      const labels={s:'Situation',t:'Task',a:'Action',r:'Result'};
+      html+=revealed.has(k)
+        ?`<div class="star-section"><div class="star-label ${k}">${labels[k]}</div><div class="star-text">${esc(story[k])}</div></div>`
+        :`<div class="reveal-btn" onclick="reveal('${k}')">Tap to reveal ${labels[k]}</div>`;
+    });
+  }
+  html+=`</div>`;
+  document.getElementById('practiceCard').innerHTML=html;
+  document.getElementById('btnPrev').disabled=currentIdx===0;
+  document.getElementById('btnNext').disabled=currentIdx===total-1;
+  setupSwipe();
+}
+
+function reveal(k){revealed.add(k);renderPractice()}
+function revealAll(){['s','t','a','r'].forEach(k=>revealed.add(k));renderPractice()}
+function markReviewed(){const i=practiceOrder[currentIdx];if(i!=null)reviewedSet.add(i)}
+
+function next(){
+  if(currentIdx<practiceOrder.length-1){markReviewed();currentIdx++;revealed=new Set();renderPractice()}
+  else{markReviewed();renderPractice()}
+}
+function prev(){
+  if(currentIdx>0){markReviewed();currentIdx--;revealed=new Set();renderPractice()}
+}
+
+function setupSwipe(){
+  const card=document.querySelector('.practice-card');
+  if(!card)return;
+  let sx=0;
+  card.addEventListener('touchstart',e=>{sx=e.touches[0].clientX},{passive:true});
+  card.addEventListener('touchend',e=>{const d=e.changedTouches[0].clientX-sx;if(Math.abs(d)>60){d<0?next():prev()}},{passive:true});
+}
+
+// ============================================================
+// MANAGE — CRUD operations, import/export, reset
+// ============================================================
+function renderManage(){
+  let html='';
+
+  // Story list
+  html+=`<div class="manage-section"><h3>Your Stories (${stories.length})</h3>`;
+  stories.forEach((s,i)=>{
+    html+=`<div class="manage-story-row"><div class="info"><div class="title">${esc(s.title)}</div><div class="company">${esc(s.company)}</div></div><div class="actions"><button onclick="editStory(${i})">Edit</button><button onclick="deleteStory(${i})">Del</button></div></div>`;
+  });
+  if(stories.length>0)html+=`<div style="margin-top:8px"><button class="manage-btn btn-secondary" onclick="exportJSON()">Export JSON</button></div>`;
+  html+=`</div>`;
+
+  // Add/Edit form
+  const s=editIdx>=0?stories[editIdx]:{title:'',company:'',s:'',t:'',a:'',r:''};
+  html+=`<div class="manage-section"><h3>${editIdx>=0?'Edit Story':'Add a Story'}</h3>`;
+  html+=`<div class="form-group"><label>Title</label><input id="f_title" value="${esc(s.title)}" placeholder="e.g. Product Launch"></div>`;
+  html+=`<div class="form-group"><label>Company</label><input id="f_company" value="${esc(s.company)}" placeholder="e.g. Acme Corp"></div>`;
+  html+=`<div class="form-group"><label>Situation</label><textarea id="f_s" placeholder="What was the context?">${esc(s.s)}</textarea></div>`;
+  html+=`<div class="form-group"><label>Task</label><textarea id="f_t" placeholder="What were you responsible for?">${esc(s.t)}</textarea></div>`;
+  html+=`<div class="form-group"><label>Action</label><textarea id="f_a" placeholder="What did YOU do?">${esc(s.a)}</textarea></div>`;
+  html+=`<div class="form-group"><label>Result</label><textarea id="f_r" placeholder="What was the measurable outcome?">${esc(s.r)}</textarea></div>`;
+  html+=`<button class="manage-btn btn-primary" onclick="saveForm()">${editIdx>=0?'Update':'Add'}</button>`;
+  if(editIdx>=0)html+=`<button class="manage-btn btn-secondary" onclick="cancelEdit()">Cancel</button>`;
+  html+=`</div>`;
+
+  // Import
+  html+=`<div class="manage-section"><h3>Import</h3>`;
+  html+=`<p>Paste markdown or upload a file to add more stories.</p>`;
+  html+=`<textarea class="import-textarea" id="manageImportMd" style="min-height:120px" placeholder="## Title | Company\nS: ...\nT: ...\nA: ...\nR: ..."></textarea>`;
+  html+=`<div style="margin-top:8px"><button class="manage-btn btn-primary" onclick="manageImportMd()">Import & Add</button>`;
+  html+=` <label style="display:inline-block"><button class="manage-btn btn-secondary" onclick="this.nextElementSibling.click()">Upload File</button><input type="file" accept=".json,.md,.txt" onchange="manageImportFile(event)" style="display:none"></label></div>`;
+  html+=`</div>`;
+
+  // Danger
+  html+=`<div class="manage-section"><h3 style="color:#ef4444">Reset</h3>`;
+  html+=`<button class="manage-btn" style="background:#991b1b;color:#fff" onclick="clearAll()">Delete All</button> `;
+  html+=`<button class="manage-btn btn-secondary" onclick="resetSamples()">Load Samples</button>`;
+  html+=`</div>`;
+
+  document.getElementById('manageContent').innerHTML=html;
+}
+
+function esc(s){return String(s).replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;').replace(/>/g,'&gt;')}
+
+function saveForm(){
+  const title=document.getElementById('f_title').value.trim();
+  const company=document.getElementById('f_company').value.trim()||'My Company';
+  const s=document.getElementById('f_s').value.trim();
+  const t=document.getElementById('f_t').value.trim();
+  const a=document.getElementById('f_a').value.trim();
+  const r=document.getElementById('f_r').value.trim();
+  if(!title||!s){alert('Title and Situation are required.');return}
+  if(editIdx>=0){stories[editIdx]={title,company,s,t,a,r};editIdx=-1}
+  else stories.push({title,company,s,t,a,r});
+  save(stories);renderManage();
+}
+
+function editStory(i){editIdx=i;renderManage();document.getElementById('f_title').scrollIntoView({behavior:'smooth'})}
+function cancelEdit(){editIdx=-1;renderManage()}
+function deleteStory(i){if(!confirm('Delete "'+stories[i].title+'"?'))return;stories.splice(i,1);editIdx=-1;save(stories);renderManage()}
+
+function manageImportMd(){
+  const md=document.getElementById('manageImportMd').value.trim();
+  const parsed=parseMd(md);
+  if(!parsed.length){alert('No stories found.');return}
+  stories.push(...parsed);save(stories);
+  alert(parsed.length+' stories added!');renderManage();
+}
+
+function manageImportFile(e){
+  const file=e.target.files[0];if(!file)return;
+  const reader=new FileReader();
+  reader.onload=function(ev){
+    const text=ev.target.result;
+    let added;
+    if(file.name.endsWith('.json')){
+      try{const d=JSON.parse(text);if(!Array.isArray(d)){alert('Invalid.');return}stories.push(...d);added=d.length}catch(err){alert('Error: '+err.message);return}
+    }else{
+      const p=parseMd(text);if(!p.length){alert('No stories found.');return}stories.push(...p);added=p.length;
+    }
+    save(stories);alert(added+' stories added!');renderManage();
+  };
+  reader.readAsText(file);
+}
+
+function exportJSON(){
+  const blob=new Blob([JSON.stringify(stories,null,2)],{type:'application/json'});
+  const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='my-star-stories.json';a.click();
+}
+
+function clearAll(){if(!confirm('Delete all stories?'))return;stories=[];save(stories);editIdx=-1;renderManage()}
+function resetSamples(){stories=[...SAMPLES];save(stories);editIdx=-1;renderManage()}
+
+// ============================================================
+// INIT — Route to welcome (first visit) or home (returning)
+// ============================================================
+// DEV MODE: URL params for testing
+// ?reset         — clear all data, show welcome
+// ?screen=home   — skip to home with samples loaded
+// ?screen=practice — skip to practice view
+// ?screen=manage — skip to manage view
+// ?screen=import — skip to import screen
+const params=new URLSearchParams(location.search);
+if(params.has('reset')){
+  localStorage.removeItem('ss_stories');
+  localStorage.removeItem('ss_onboarded');
+  stories=[];
+}
+if(params.get('screen')){
+  // Load samples if needed for testing
+  if(stories.length===0){stories=[...SAMPLES];save(stories);setOnboarded()}
+  const s=params.get('screen');
+  if(s==='home')goHome();
+  else if(s==='practice'){startPractice()}
+  else if(s==='manage'){showScreen('screenManage');renderManage()}
+  else if(s==='import')showScreen('screenImport');
+  else goHome();
+}else if(isOnboarded()&&stories.length>0){
+  goHome();
+}else if(isOnboarded()&&stories.length===0){
+  goHome();
+}else{
+  showScreen('screenWelcome');
+}
+</script>
+</body>
+</html>
