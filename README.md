@@ -1,12 +1,12 @@
 # StarShine
 
-**When I'm preparing for a behavioral interview**, I want to **practice recalling my STAR stories from memory** so that I can **deliver them confidently without reading from notes.**
+**When you're preparing for a behavioral interview**, you want to **practice recalling your STAR stories from memory** so you can **deliver them confidently without reading from notes.**
 
 StarShine is a free, open-source flashcard app built for exactly this. Paste your stories in, practice on the go, and walk into your interview ready.
 
 ## What problems does it solve?
 
-- **"I have a huge doc of STAR stories but I can't memorize them"** — Flashcard mode forces active recall instead of passive reading
+- **"I have a huge doc of STAR stories but can't memorize them"** — Flashcard mode forces active recall instead of passive reading
 - **"I want to practice on my phone between meetings"** — Mobile-first, works offline, add to home screen
 - **"I don't want to type stories one by one into a flashcard app"** — Paste a markdown file and you're done
 - **"I need to test myself, not just review"** — Quiz mode shows the Situation and makes you recall the rest
