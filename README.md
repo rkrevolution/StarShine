@@ -11,24 +11,56 @@ StarShine is a free, open-source flashcard app built for exactly this. Paste you
 - **"I don't want to type stories one by one into a flashcard app"** — Paste a markdown file and you're done
 - **"I need to test myself, not just review"** — Quiz mode shows the Situation and makes you recall the rest
 
+## How it works
+
+### 1. Open the app — no signup, no account
+
+Choose to explore with sample stories or import your own right away.
+
+| Mobile | Desktop |
+|--------|---------|
+| ![Welcome mobile](screenshots/welcome-mobile.png) | ![Welcome desktop](screenshots/welcome-desktop.png) |
+
+### 2. Browse your stories
+
+All your STAR stories in a clean list. Tap any story to start practicing.
+
+| Mobile | Desktop |
+|--------|---------|
+| ![Home mobile](screenshots/home-mobile.png) | ![Home desktop](screenshots/home-desktop.png) |
+
+### 3. Practice with flashcards or quiz yourself
+
+**Flashcard mode** — tap to progressively reveal Situation, Task, Action, Result.
+**Quiz mode** — see the Situation, try to recall the rest from memory before revealing.
+
+| Mobile | Desktop |
+|--------|---------|
+| ![Practice mobile](screenshots/practice-mobile.png) | ![Practice desktop](screenshots/practice-desktop.png) |
+
+### 4. Import your stories in seconds
+
+Paste a markdown file or upload a `.json` / `.md` file. No typing stories one by one.
+
+![Import screen](screenshots/import-desktop.png)
+
+### 5. Manage your library
+
+Add, edit, delete stories. Export JSON to move between devices. All from the Manage tab.
+
+![Manage screen](screenshots/manage-mobile.png)
+
 ## Features
 
-- **Flashcards** — Tap to progressively reveal Situation, Task, Action, Result
+- **Flashcards** — Tap to progressively reveal S, T, A, R
 - **Quiz Mode** — See the Situation, recall the rest before checking
-- **Progress Tracking** — See how many stories you've reviewed vs remaining
-- **Import from Markdown** — Paste a markdown file to bulk-add stories
-- **Add/Edit/Delete** — Full CRUD for managing your stories
+- **Progress Tracking** — Reviewed count, remaining count, progress bar
+- **Import from Markdown** — Paste a doc to bulk-add stories
+- **Add/Edit/Delete** — Full CRUD for managing stories
 - **Export/Import JSON** — Move stories between devices
 - **Mobile-first** — Bottom nav on mobile, top nav on desktop
 - **Works offline** — No server, no accounts, no dependencies
 - **Zero setup** — Single HTML file, no build tools, no frameworks
-
-## Getting Started
-
-1. Open the app
-2. Choose **Try with sample stories** to explore, or **Import my stories** to add your own
-3. Tap any story to start practicing
-4. Switch between Flashcard and Quiz modes
 
 ## Markdown Import Format
 
@@ -45,13 +77,6 @@ T: ...
 A: ...
 R: ...
 ```
-
-## How It Works
-
-- Single `index.html` file — no build step, no dependencies
-- Stories stored in browser localStorage
-- Dark theme, responsive design
-- Swipe support on mobile
 
 ## Deploy Your Own
 
@@ -78,9 +103,10 @@ Add URL params for quick testing:
 
 ```
 StarShine/
-  index.html            # The entire app
-  apple-touch-icon.png  # Star icon for iOS home screen
-  README.md             # This file
+  index.html              # The entire app
+  apple-touch-icon.png    # Star icon for iOS home screen
+  screenshots/            # App screenshots for README
+  README.md               # This file
 ```
 
 ## License
