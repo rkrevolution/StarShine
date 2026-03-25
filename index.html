@@ -90,15 +90,22 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;b
 
 @media(min-width:640px){
   body{display:flex;flex-direction:column;align-items:center}
-  .screen{max-width:480px;width:100%;margin:0 auto}
+  .screen{max-width:720px;width:100%;margin:0 auto}
   .bottom-nav{display:none!important}
-  .top-nav{display:flex;max-width:480px;width:100%;margin:16px auto 0;gap:4px;padding:8px;background:#141414;border:1px solid #222;border-radius:12px}
+  .top-nav{display:flex;max-width:720px;width:100%;margin:16px auto 0;gap:4px;padding:8px;background:#141414;border:1px solid #222;border-radius:12px}
   .top-nav button{flex:1;padding:10px;border:none;border-radius:8px;background:transparent;color:#666;font-size:0.85rem;cursor:pointer;transition:color 0.15s,background 0.15s}
   .top-nav button.active{color:#60a5fa;background:#1a1a2a}
   .top-nav button:hover{color:#aaa}
   .home,.practice,.manage{padding-bottom:16px}
   .welcome{max-width:480px}
-  .import-screen{max-width:480px}
+  .import-screen{max-width:520px}
+  /* Home: 2-col story grid */
+  .story-list{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}
+  /* Practice: wider card */
+  .practice{max-width:600px}
+  /* Manage: 2-col layout */
+  .manage{max-width:720px}
+  .manage-grid{display:grid;grid-template-columns:1fr 1fr;gap:24px;align-items:start}
 }
 
 /* Mobile: hide top nav */
@@ -505,26 +512,15 @@ function setupSwipe(){
 // ============================================================
 function renderManage(){
   let html='';
+  html+=`<div class="manage-grid">`;
 
-  // Story list
+  // LEFT COLUMN: Story list + Import
+  html+=`<div>`;
   html+=`<div class="manage-section"><h3>Your Stories (${stories.length})</h3>`;
   stories.forEach((s,i)=>{
     html+=`<div class="manage-story-row"><div class="info"><div class="title">${esc(s.title)}</div><div class="company">${esc(s.company)}</div></div><div class="actions"><button onclick="editStory(${i})">Edit</button><button onclick="deleteStory(${i})">Del</button></div></div>`;
   });
   if(stories.length>0)html+=`<div style="margin-top:8px"><button class="manage-btn btn-secondary" onclick="exportJSON()">Export JSON</button></div>`;
-  html+=`</div>`;
-
-  // Add/Edit form
-  const s=editIdx>=0?stories[editIdx]:{title:'',company:'',s:'',t:'',a:'',r:''};
-  html+=`<div class="manage-section"><h3>${editIdx>=0?'Edit Story':'Add a Story'}</h3>`;
-  html+=`<div class="form-group"><label>Title</label><input id="f_title" value="${esc(s.title)}" placeholder="e.g. Product Launch"></div>`;
-  html+=`<div class="form-group"><label>Company</label><input id="f_company" value="${esc(s.company)}" placeholder="e.g. Acme Corp"></div>`;
-  html+=`<div class="form-group"><label>Situation</label><textarea id="f_s" placeholder="What was the context?">${esc(s.s)}</textarea></div>`;
-  html+=`<div class="form-group"><label>Task</label><textarea id="f_t" placeholder="What were you responsible for?">${esc(s.t)}</textarea></div>`;
-  html+=`<div class="form-group"><label>Action</label><textarea id="f_a" placeholder="What did YOU do?">${esc(s.a)}</textarea></div>`;
-  html+=`<div class="form-group"><label>Result</label><textarea id="f_r" placeholder="What was the measurable outcome?">${esc(s.r)}</textarea></div>`;
-  html+=`<button class="manage-btn btn-primary" onclick="saveForm()">${editIdx>=0?'Update':'Add'}</button>`;
-  if(editIdx>=0)html+=`<button class="manage-btn btn-secondary" onclick="cancelEdit()">Cancel</button>`;
   html+=`</div>`;
 
   // Import
@@ -540,7 +536,24 @@ function renderManage(){
   html+=`<button class="manage-btn" style="background:#991b1b;color:#fff" onclick="clearAll()">Delete All</button> `;
   html+=`<button class="manage-btn btn-secondary" onclick="resetSamples()">Load Samples</button>`;
   html+=`</div>`;
+  html+=`</div>`;
 
+  // RIGHT COLUMN: Add/Edit form
+  html+=`<div>`;
+  const s=editIdx>=0?stories[editIdx]:{title:'',company:'',s:'',t:'',a:'',r:''};
+  html+=`<div class="manage-section"><h3>${editIdx>=0?'Edit Story':'Add a Story'}</h3>`;
+  html+=`<div class="form-group"><label>Title</label><input id="f_title" value="${esc(s.title)}" placeholder="e.g. Product Launch"></div>`;
+  html+=`<div class="form-group"><label>Company</label><input id="f_company" value="${esc(s.company)}" placeholder="e.g. Acme Corp"></div>`;
+  html+=`<div class="form-group"><label>Situation</label><textarea id="f_s" placeholder="What was the context?">${esc(s.s)}</textarea></div>`;
+  html+=`<div class="form-group"><label>Task</label><textarea id="f_t" placeholder="What were you responsible for?">${esc(s.t)}</textarea></div>`;
+  html+=`<div class="form-group"><label>Action</label><textarea id="f_a" placeholder="What did YOU do?">${esc(s.a)}</textarea></div>`;
+  html+=`<div class="form-group"><label>Result</label><textarea id="f_r" placeholder="What was the measurable outcome?">${esc(s.r)}</textarea></div>`;
+  html+=`<button class="manage-btn btn-primary" onclick="saveForm()">${editIdx>=0?'Update':'Add'}</button>`;
+  if(editIdx>=0)html+=`<button class="manage-btn btn-secondary" onclick="cancelEdit()">Cancel</button>`;
+  html+=`</div>`;
+  html+=`</div>`;
+
+  html+=`</div>`; // close manage-grid
   document.getElementById('manageContent').innerHTML=html;
 }
 
