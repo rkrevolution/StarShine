@@ -4,6 +4,8 @@
 
 StarShine is a free, open-source flashcard app built for exactly this. Paste your stories in, practice on the go, and walk into your interview ready.
 
+https://github.com/rkrevolution/StarShine/raw/main/starshine-demo.mp4
+
 ## What problems does it solve?
 
 - **"I have a huge doc of STAR stories but can't memorize them"** — Flashcard mode forces active recall instead of passive reading
