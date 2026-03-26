@@ -4,7 +4,7 @@
 
 StarShine is a free, open-source flashcard app built for exactly this. Paste your stories in, practice on the go, and walk into your interview ready.
 
-https://github.com/user-attachments/assets/b9e4c6f4-abbf-4644-ad83-3fb4f6ebc4a9
+https://github.com/user-attachments/assets/b916e980-32dc-4e7d-94ff-ef8162fe1731
 
 ## What problems does it solve?
 
